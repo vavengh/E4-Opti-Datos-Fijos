@@ -9,12 +9,12 @@ Bici = 10
 num_vehiculos = Furgoneta+Auto+Moto+Bici
 
 # Rango de pedidos, basado en la cantidad máxima q se puede recibir si todos los pedidos quedadn a 15 kilómetros
-Rango_pedidos = (Furgoneta*11)+(Auto*11)+(Moto*12)+(Bici*9)-80
+Rango_pedidos = (Furgoneta*11)+(Auto*11)+(Moto*12)+(Bici*9)
 
 # Define los parámetros de generación de datos para pedidos
 # num_pedidos = random.randint(int(Rango_pedidos/2), Rango_pedidos)  # Número de pedidos aleatorio entre su capacidad máxima y media capacidad
 num_pedidos = int(Rango_pedidos*0.8) #Numero de pedidos fijo para poder trabajar con los mismos pedidos en el analisis de sensibilidad
-max_distancia = 15  # Distancia máxima en kilómetros
+max_distancia = 15000  # Distancia máxima en kilómetros
 max_volumen = 3.3  # Volumen máximo en metros cúbicos
 max_minuto_laboral = 780  # Minuto laboral máximo
 
