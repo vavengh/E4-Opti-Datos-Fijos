@@ -106,7 +106,7 @@ m.setObjective(obj, GRB.MAXIMIZE)
 m.optimize()
 
 tiempo_transcurrido = m.Runtime
-if tiempo_transcurrido >= 60:  # Si el tiempo transcurrido es mayor o igual a 60 segundos
+if tiempo_transcurrido >= 10*60:  # Si el tiempo transcurrido es mayor o igual a 60 segundos
     m.terminate()
 
 m.printAttr("ObjVal")
