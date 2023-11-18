@@ -2,18 +2,18 @@ import pandas as pd
 import random
 
 # Cantidad de cada vehículo (Se adapta a cualquier tamaño de empresa)
-Furgoneta = 10
-Auto = 10
-Moto = 15
-Bici = 10
+Furgoneta = 5
+Auto = 5
+Moto = 7
+Bici = 5
 num_vehiculos = Furgoneta+Auto+Moto+Bici
 
 # Rango de pedidos, basado en la cantidad máxima q se puede recibir si todos los pedidos quedadn a 15 kilómetros
-Rango_pedidos = (Furgoneta*11)+(Auto*11)+(Moto*12)+(Bici*9)
+Rango_pedidos = (Furgoneta*11)+(Auto*11)+(Moto*12)+(Bici*9)-48
 
 # Define los parámetros de generación de datos para pedidos
 # num_pedidos = random.randint(int(Rango_pedidos/2), Rango_pedidos)  # Número de pedidos aleatorio entre su capacidad máxima y media capacidad
-num_pedidos = int(Rango_pedidos*0.8) #Numero de pedidos fijo para poder trabajar con los mismos pedidos en el analisis de sensibilidad
+num_pedidos = int(Rango_pedidos) #Numero de pedidos fijo para poder trabajar con los mismos pedidos en el analisis de sensibilidad
 max_distancia = 15000  # Distancia máxima en kilómetros
 max_volumen = 3.3  # Volumen máximo en metros cúbicos
 max_minuto_laboral = 780  # Minuto laboral máximo
@@ -31,7 +31,7 @@ P_B = ((num_pedidos//num_vehiculos)*Bici)+Resto
 # Genera datos aleatorios para pedidos
 data_pedidos = {
     'Pedido': list(range(1, num_pedidos + 1)),
-    'Distancia': [random.uniform(0.1, max_distancia) for _ in range(num_pedidos)],
+    'Distancia': [random.uniform(500, max_distancia) for _ in range(num_pedidos)],
     'Volumen': (
         [random.uniform(volumen_min, 3.3) for _ in range(P_F)] +
         [random.uniform(volumen_min, 0.3) for _ in range(P_A)] +

@@ -6,17 +6,17 @@ from matplotlib import pyplot as plt
 
 
 # Cantidad de cada vehículo (Se adapta a cualquier tamaño de empresa)
-Furgoneta = 10
-Auto = 10
-Moto = 15
-Bici = 10
+Furgoneta = 5
+Auto = 5
+Moto = 7
+Bici = 5
 num_vehiculos = Furgoneta+Auto+Moto+Bici
 
 # Rango de pedidos, basado en la cantidad máxima q se puede recibir si todos los pedidos quedadn a 15 kilómetros
-Rango_pedidos = (Furgoneta*11)+(Auto*11)+(Moto*12)+(Bici*9)
+Rango_pedidos = (Furgoneta*11)+(Auto*11)+(Moto*12)+(Bici*9)-48
 
 # Define los parámetros de generación de datos para pedidos
-num_pedidos = int(Rango_pedidos*0.8) #Numero de pedidos fijo para poder trabajar con los mismos pedidos en el analisis de sensibilidad
+num_pedidos = int(Rango_pedidos) #Numero de pedidos fijo para poder trabajar con los mismos pedidos en el analisis de sensibilidad
 
 
 
@@ -43,7 +43,7 @@ P = 400000000  # Este valor puede ser asignado directamente
 B_i = df_pedidos['MinutoLaboral'].tolist()
 
 m = Model()
-m.setParam('TimeLimit', 80*60)
+m.setParam('TimeLimit', 45*60)
 
 # Variables de decision
 
@@ -106,7 +106,7 @@ m.setObjective(obj, GRB.MAXIMIZE)
 m.optimize()
 
 tiempo_transcurrido = m.Runtime
-if tiempo_transcurrido >= 80*60:  # Si el tiempo transcurrido es mayor o igual a 60 segundos
+if tiempo_transcurrido >= 45*60:  # Si el tiempo transcurrido es mayor o igual a 60 segundos
     m.terminate()
 
 m.printAttr("ObjVal")
