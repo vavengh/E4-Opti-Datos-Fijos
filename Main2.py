@@ -10,13 +10,9 @@ Furgoneta = 5
 Auto = 5
 Moto = 7
 Bici = 5
-num_vehiculos = Furgoneta+Auto+Moto+Bici
-
-# Rango de pedidos, basado en la cantidad máxima q se puede recibir si todos los pedidos quedadn a 15 kilómetros
-Rango_pedidos = (Furgoneta*11)+(Auto*11)+(Moto*12)+(Bici*9)-48
 
 # Define los parámetros de generación de datos para pedidos
-num_pedidos = int(Rango_pedidos) #Numero de pedidos fijo para poder trabajar con los mismos pedidos en el analisis de sensibilidad
+# num_pedidos = random.randint(int(Rango_pedidos/2), Rango_pedidos)  # Número de pedidos aleatorio entre su capacidad máxima y media capacidad
 
 
 
@@ -24,9 +20,9 @@ df_pedidos = pd.read_csv('data_pedidos.csv')
 df_vehiculos = pd.read_csv('data_vehiculos.csv')
 
 # Conjuntos:
-T = range(0,840) #tiempo del dia
+T = range(0,480) #tiempo del dia
 K = range(1,4) #1 Auto grande, 2 Auto chico, 3 Moto, 4 Bici
-I = range(1, int(num_pedidos))  # Cambiar el límite superior a num_pedidos
+I = range(1, 150)  # Cambiar el límite superior a num_pedidos
 #indices de los pedidos
 print('T:', T)
 print('K:',K)
@@ -71,7 +67,7 @@ m.addConstr((quicksum(X[i, k, t] * O_k[k] * D_i[i] for i in I for k in K for t i
 
 
 # Restricción 5: Un repartidor no puede repartir un producto al cual no alcance a volver a tiempo
-m.addConstrs((X[i, k, t] * (1 / 60) * (D_i[i] / VEL_k[k]) <= 840 - B_i[i] for k in K for t in T for i in I), name="R5")
+m.addConstrs((X[i, k, t] * (1 / 60) * (D_i[i] / VEL_k[k]) <= 480 - B_i[i] for k in K for t in T for i in I), name="R5")
 
 
 # Restricción 6: Para poder asignar el tipo de vehículo k al pedido i en el tiempo t, este vehículo debe estar disponible
@@ -79,7 +75,7 @@ m.addConstrs((X[i, k, t] <= Y[k, t] for k in K for t in T for i in I), name="R6"
 
 # Restricción 7: Cada pedido i debe ser entregado en un rango de 2 horas a partir de la hora solicitada (b_i)
 m.addConstrs((quicksum(X[i, k, t] for t in range(0, max(0, B_i[i] - 60))) <= (D_i[i] / (60 * VEL_k[k])) for k in K for i in I), name="R7a")
-m.addConstrs((quicksum(X[i, k, t] for t in range(B_i[i] + 60, 840)) <= (D_i[i] / (60 * VEL_k[k])) for k in K for i in I), name="R7b")
+m.addConstrs((quicksum(X[i, k, t] for t in range(B_i[i] + 60, 480)) <= (D_i[i] / (60 * VEL_k[k])) for k in K for i in I), name="R7b")
 #m.addConstrs((quicksum(X[i, k, t] for t in range(0, 840)) == ((D_i[i] * 2) / (VEL_k[k]*60)) for k in K for i in I), name="R7c")
 m.addConstr((quicksum(X[i, k, t] for t in T for i in I for k in K) >= quicksum(1 for i in I)), name="R7c")
 
@@ -101,7 +97,7 @@ m.addConstrs((S[k, t] + Y[k, t] <= 1 for t in T for k in K), name="R10")
 m.update()
 
 obj = quicksum(X[i, k, t] * C_k[k] * 2 * D_i[i] for i in I for k in K for t in T)
-m.setObjective(obj, GRB.MAXIMIZE)
+m.setObjective(obj, GRB.MINIMIZE)
 
 m.optimize()
 
@@ -124,16 +120,19 @@ resultados = []
 # Recorrer las variables X
 for i in I:
     for k in K:
+        w = 0
         for t in T:
             # Verificar si la variable de decisión X es igual a 1
             if X[i, k, t].x == 1:
-                # Almacenar la variable de decisión y su valor en la lista de resultados
-                resultados.append({
-                    'Pedido': i,
-                    'Vehiculo': k,
-                    'Tiempo': t,
-                    'X': X[i, k, t].x  # Valor de la variable de decisión X en la solución óptima
-                })
+                w = 1
+        if w == 1:
+            resultados.append({
+                'Pedido': i,
+                'Vehiculo': k,
+                'Tiempo entrega': B_i[i]
+            })
+            w = 0
+
 
 # Crear un DataFrame de pandas a partir de la lista de resultados
 df_resultados = pd.DataFrame(resultados)
