@@ -115,3 +115,32 @@ m.printAttr("ObjVal")
 
 valor_objetivo = m.ObjVal
 print(f"Valor objetivo: {valor_objetivo}")
+
+print('\n ----------------------------------------------------------- \n')
+
+# Crear una lista para almacenar los resultados
+resultados = []
+
+# Recorrer las variables X
+for i in I:
+    for k in K:
+        for t in T:
+            # Verificar si la variable de decisión X es igual a 1
+            if X[i, k, t].x == 1:
+                # Almacenar la variable de decisión y su valor en la lista de resultados
+                resultados.append({
+                    'Pedido': i,
+                    'Vehiculo': k,
+                    'Tiempo': t,
+                    'X': X[i, k, t].x  # Valor de la variable de decisión X en la solución óptima
+                })
+
+# Crear un DataFrame de pandas a partir de la lista de resultados
+df_resultados = pd.DataFrame(resultados)
+
+# Guardar la tabla de resultados en un archivo Excel
+df_resultados.to_excel('resultados.xlsx', index=False)
+
+# Mostrar la tabla de valores de las variables de decisión
+print(df_resultados)
+
