@@ -38,7 +38,7 @@ data_pedidos = {
         [random.uniform(volumen_min, 0.07) for _ in range(P_M)] +
         [random.uniform(volumen_min, 0.07) for _ in range(P_B)]
     ),
-    'MinutoLaboral': [random.randint(0, max_minuto_laboral) for _ in range(num_pedidos)]
+    'MinutoLaboral': [random.randint(61, max_minuto_laboral) for _ in range(num_pedidos)]
 }
 
 # Crea un DataFrame para pedidos
